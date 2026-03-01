@@ -19,9 +19,7 @@ public class JpaCreate {
         transaction.begin();
         try {
             // 회원 저장
-            Member member = new Member();
-            member.setId(1L);
-            member.setName("HelloA");
+            Member member = new Member(1L, "HelloA");
             entityManager.persist(member);
             // 트랜잭션 커밋
             transaction.commit();
