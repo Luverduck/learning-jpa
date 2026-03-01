@@ -1,4 +1,4 @@
-package hello.jpa;
+package hello.jpa.start;
 
 import hello.jpa.entity.Member;
 import jakarta.persistence.EntityManager;
@@ -6,7 +6,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
-public class JpaCreate {
+public class JpaRead {
     public static void main(String[] args) {
         // EntityManagerFactory 생성
         // - persistence.xml에서 name이 hello인 <persistence-unit> 항목의 설정을 기반으로 EntityManagerFactory 생성
@@ -18,11 +18,10 @@ public class JpaCreate {
         // 트랜잭션 시작
         transaction.begin();
         try {
-            // 회원 저장
-            Member member = new Member();
-            member.setId(1L);
-            member.setName("HelloA");
-            entityManager.persist(member);
+            // 회원 조회
+            Member findMember = entityManager.find(Member.class, 1L);
+            System.out.println("findMember.id = " + findMember.getId());
+            System.out.println("findMember.name = " + findMember.getName());
             // 트랜잭션 커밋
             transaction.commit();
         } catch (Exception e) {

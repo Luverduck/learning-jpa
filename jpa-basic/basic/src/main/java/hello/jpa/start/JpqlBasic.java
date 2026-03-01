@@ -1,4 +1,4 @@
-package hello.jpa;
+package hello.jpa.start;
 
 import hello.jpa.entity.Member;
 import jakarta.persistence.EntityManager;
