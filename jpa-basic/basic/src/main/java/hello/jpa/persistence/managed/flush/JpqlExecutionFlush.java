@@ -1,4 +1,4 @@
-package hello.jpa.flush;
+package hello.jpa.persistence.managed.flush;
 
 import hello.jpa.entity.Member;
 import jakarta.persistence.EntityManager;
@@ -6,7 +6,9 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
-public class TransactionCommitFlush {
+import java.util.List;
+
+public class JpqlExecutionFlush {
     public static void main(String[] args) {
         // EntityManagerFactory 생성
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("hello");
@@ -18,13 +20,18 @@ public class TransactionCommitFlush {
         transaction.begin();
         try {
             // 회원 생성
-            Member memberA = new Member(201L, "MemberA");
-            Member memberB = new Member(202L, "MemberB");
-            Member memberC = new Member(203L, "MemberC");
+            Member memberA = new Member(301L, "MemberA");
+            Member memberB = new Member(302L, "MemberB");
+            Member memberC = new Member(303L, "MemberC");
             // 영속성 컨텍스트에 저장
             entityManager.persist(memberA);
             entityManager.persist(memberB);
             entityManager.persist(memberC);
+            // JPQL 실행
+            System.out.println("=== JPQL 실행 전 ===");
+            List<Member> result = entityManager.createQuery("SELECT m FROM Member AS m", Member.class)
+                    .getResultList();
+            System.out.println("=== JPQL 실행 후 ===");
             // 트랜잭션 커밋
             System.out.println("=== 트랜잭션 커밋 전 ===");
             transaction.commit();
