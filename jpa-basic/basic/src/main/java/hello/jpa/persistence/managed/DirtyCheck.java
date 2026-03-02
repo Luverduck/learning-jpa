@@ -1,4 +1,4 @@
-package hello.jpa.persistencecontext;
+package hello.jpa.persistence.managed;
 
 import hello.jpa.entity.Member;
 import jakarta.persistence.EntityManager;
