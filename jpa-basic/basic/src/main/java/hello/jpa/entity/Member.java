@@ -7,6 +7,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.Transient;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,6 +34,9 @@ public class Member {
 
     @Lob
     private String description;
+
+    @Transient
+    private int temp;
 
     public Member() {
     }
