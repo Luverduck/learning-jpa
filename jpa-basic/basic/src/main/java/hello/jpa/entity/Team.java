@@ -1,10 +1,6 @@
 package hello.jpa.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +15,8 @@ public class Team {
 
     private String name;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany
+    @JoinColumn(name = "TEAM_ID")
     private List<Member> members = new ArrayList<>();
 
     public Long getId() {
@@ -45,17 +42,5 @@ public class Team {
     public void setMembers(List<Member> members) {
         this.members = members;
     }
-
-    // [연관관계 매핑 주의사항 3]
-    // Team 엔티티에서 Member 엔티티 참조
-    /*@Override
-    public String toString() {
-        return "Team{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", members=" + members +
-                '}';
-    }*/
-    // [연관관계 매핑 주의사항 3]
 
 }
