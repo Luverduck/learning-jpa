@@ -7,7 +7,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
-public class UndirectionalRelation {
+public class UnidirectionalRelation {
     public static void main(String[] args) {
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("hello");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
