@@ -48,14 +48,14 @@ public class Team {
 
     // [연관관계 매핑 주의사항 3]
     // Team 엔티티에서 Member 엔티티 참조
-    @Override
+    /*@Override
     public String toString() {
         return "Team{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", members=" + members +
                 '}';
-    }
+    }*/
     // [연관관계 매핑 주의사항 3]
 
 }

@@ -63,14 +63,14 @@ public class Member {
 
     // [연관관계 매핑 주의사항 3]
     // Member 엔티티에서 Team 엔티티 참조
-    @Override
+    /*@Override
     public String toString() {
         return "Member{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", team=" + team +
                 '}';
-    }
+    }*/
     // [연관관계 매핑 주의사항 3]
 
 }
