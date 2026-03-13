@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-import jpabook.jpashop.domain.Order;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -17,7 +16,7 @@ public class JpaMain {
         // 트랜잭션 시작
         transaction.begin();
         try {
-            Order order = entityManager.find(Order.class, 1L);
+
 
             // 트랜잭션 커밋
             transaction.commit();
