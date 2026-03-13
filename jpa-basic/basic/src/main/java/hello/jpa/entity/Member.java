@@ -52,4 +52,25 @@ public class Member {
     public void setTeam(Team team) {
         this.team = team;
     }
+
+    // [연관관계 매핑 주의사항 2]
+    // 연관관계 수정 메소드
+    public void changeTeam(Team team) {
+        this.team = team;
+        team.getMembers().add(this);
+    }
+    // [연관관계 매핑 주의사항 2]
+
+    // [연관관계 매핑 주의사항 3]
+    // Member 엔티티에서 Team 엔티티 참조
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", team=" + team +
+                '}';
+    }
+    // [연관관계 매핑 주의사항 3]
+
 }
