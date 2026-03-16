@@ -7,6 +7,9 @@
     <persistence-unit name="hello">
         <class>hello.jpa.entity.Member</class>
         <class>hello.jpa.entity.Team</class>
+        <class>hello.jpa.entity.Locker</class>
+        <class>hello.jpa.entity.MemberProduct</class>
+        <class>hello.jpa.entity.Product</class>
         <properties>
             <!-- 필수 속성 -->
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
