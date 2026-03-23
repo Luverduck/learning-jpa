@@ -1,6 +1,5 @@
 package hello.jpa.mappping.inheritance;
 
-import hello.jpa.entity.Member;
 import hello.jpa.entity.Movie;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
