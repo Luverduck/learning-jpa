@@ -1,10 +1,12 @@
 package hello.jpa.mappping.inheritance;
 
-import hello.jpa.entity.Movie;
+import hello.jpa.entity.Member;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+
+import java.time.LocalDateTime;
 
 public class InheritanceMapping {
     public static void main(String[] args) {
@@ -13,12 +15,16 @@ public class InheritanceMapping {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         try {
-            Movie movie = new Movie();
-            movie.setName("바람과 함께 사라지다.");
-            movie.setDirector("DIRECTOR");
-            movie.setActor("ACTOR");
-            movie.setPrice(10000);
-            entityManager.persist(movie);
+            Member member = new Member();
+            member.setName("user1");
+            member.setCreatedBy("kim");
+            member.setCreatedDate(LocalDateTime.now());
+
+            entityManager.persist(member);
+
+            entityManager.flush();
+            entityManager.clear();
+
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
