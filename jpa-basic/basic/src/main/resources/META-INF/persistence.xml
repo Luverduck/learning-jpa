@@ -16,6 +16,7 @@
         <class>hello.jpa.entity.Book</class>
         <class>hello.jpa.entity.Parent</class>
         <class>hello.jpa.entity.Child</class>
+        <class>hello.jpa.entity.AddressEntity</class>
         <properties>
             <!-- 필수 속성 -->
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
