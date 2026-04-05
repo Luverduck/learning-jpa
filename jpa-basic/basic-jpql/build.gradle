@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group = 'hello'
+version = '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Hibernate ORM
+    implementation 'org.hibernate.orm:hibernate-core:7.2.5.Final'
+    // H2 DB
+    runtimeOnly 'com.h2database:h2:2.4.240'
+    // Logging
+    implementation 'org.slf4j:slf4j-simple:2.0.17'
+}
