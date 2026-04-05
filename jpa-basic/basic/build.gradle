@@ -20,6 +20,18 @@ dependencies {
     implementation 'org.hibernate.orm:hibernate-core:7.2.5.Final'
     // H2 DB
     runtimeOnly 'com.h2database:h2:2.4.240'
+    // Querydsl
+    // - OpenFeign Querydsl
+    implementation "io.github.openfeign.querydsl:querydsl-jpa:7.0"
+    // - Querydsl Annotation Processor Tool
+    annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:7.0:jpa'
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
     // Logging
     implementation 'org.slf4j:slf4j-simple:2.0.17'
+}
+
+// 프로젝트 빌드 시 생성된 소스 파일 삭제
+clean {
+    delete file('src/main/generated')
 }
