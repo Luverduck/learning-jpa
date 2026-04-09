@@ -9,6 +9,10 @@
         <class>hello.jpql.entity.Team</class>
         <class>hello.jpql.entity.Order</class>
         <class>hello.jpql.entity.Product</class>
+        <class>hello.jpql.entity.Item</class>
+        <class>hello.jpql.entity.Album</class>
+        <class>hello.jpql.entity.Book</class>
+        <class>hello.jpql.entity.Movie</class>
         <properties>
             <!-- 필수 속성 -->
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
