@@ -1,8 +1,6 @@
 package hello.jpql.subquery;
 
-import hello.jpql.entity.Address;
 import hello.jpql.entity.Member;
-import hello.jpql.entity.Order;
 import hello.jpql.entity.Team;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
