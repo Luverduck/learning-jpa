@@ -27,17 +27,9 @@ public class NullIfExpression {
             member.changeTeam(team);
             entityManager.persist(member);
 
-            // 엔티티 조회
-            // 리터럴
-            // - 문자
-            String query1 = "SELECT m FROM Member m WHERE m.name = 'member1'";
-            List<Object[]> resultList1 = entityManager.createQuery(query1, Object[].class).getResultList();
-            // - 숫자
-            String query2 = "SELECT m FROM Member m WHERE m.age = 10L";
-            List<Object[]> resultList2 = entityManager.createQuery(query2, Object[].class).getResultList();
-            // - 열거
-            String query4 = "SELECT m FROM Member m WHERE m.type = hello.jpql.entity.MemberType.ADMIN";
-            List<Object[]> resultList4 = entityManager.createQuery(query4, Object[].class).getResultList();
+            // NULLIF 함수
+            String query = "SELECT NULLIF(m.name, '관리자') FROM Member m";
+            List<Object[]> resultList4 = entityManager.createQuery(query, Object[].class).getResultList();
 
             transaction.commit();
         } catch (Exception e) {

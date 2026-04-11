@@ -29,7 +29,7 @@ public class CoalesceExpression {
             member.changeTeam(team);
             entityManager.persist(member);
 
-            // COALESCE 표현식
+            // COALESCE 함수
             String query = "SELECT COALESCE(m.name, '이름없는 회원') FROM Member m";
             List<Object[]> resultList = entityManager.createQuery(query, Object[].class).getResultList();
 

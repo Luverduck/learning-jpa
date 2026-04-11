@@ -27,8 +27,14 @@ public class SimpleCaseExpression {
             member.changeTeam(team);
             entityManager.persist(member);
 
-            // NULLIF 표현식
-            String query = "SELECT NULLIF(m.name, '관리자') FROM Member m";
+            // 단순 CASE 표현식
+            String query = "SELECT " +
+                                "CASE t.name " +
+                                "WHEN 'teamA' THEN '110%' " +
+                                "when 'teamB' THEN '120%' " +
+                                "ELSE '105%' " +
+                                "END " +
+                            "FROM Team t";
             List<Object[]> resultList = entityManager.createQuery(query, Object[].class).getResultList();
 
             transaction.commit();
