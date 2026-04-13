@@ -45,6 +45,10 @@ public class FetchJoinCollection {
             System.out.println("resultList.size() = " + resultList.size());
             for (Team result : resultList) {
                 System.out.println("result = " + result.getName() + ", " + result.getMembers().size());
+                List<Member> resultMembers = result.getMembers();
+                for (Member resultMember : resultMembers) {
+                    System.out.println("-> resultMember = " + resultMember.getName());
+                }
             }
 
             transaction.commit();
