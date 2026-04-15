@@ -27,6 +27,7 @@
             <property name="hibernate.use_sql_comments" value="true"/>
             <property name="hibernate.jdbc.batch_size" value="1000"/>
             <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <!--<property name="hibernate.default_batch_fetch_size" value="3"/>--> <!-- 배치 사이즈 전역 설정 -->
         </properties>
     </persistence-unit>
 
