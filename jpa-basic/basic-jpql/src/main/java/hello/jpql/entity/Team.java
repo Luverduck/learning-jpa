@@ -1,9 +1,7 @@
 package hello.jpql.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +13,7 @@ public class Team {
     @GeneratedValue
     private Long id;
 
+    @BatchSize(size = 3)
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
 
