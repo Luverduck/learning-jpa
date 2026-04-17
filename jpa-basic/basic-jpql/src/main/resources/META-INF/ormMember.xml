@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="3.0"
+                 xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence/orm https://jakarta.ee/xml/ns/persistence/orm/orm_3_0.xsd">
+
+    <!-- Named 쿼리 정의 -->
+    <named-query name="Member.count">
+        <query>
+            SELECT COUNT(m) FROM Member m
+        </query>
+    </named-query>
+    <named-query name="Member.findByAge">
+        <query>
+            <![CDATA[
+                SELECT m
+                FROM Member m
+                WHERE m.age = :age
+            ]]>
+        </query>
+    </named-query>
+
+</entity-mappings>

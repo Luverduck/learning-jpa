@@ -3,6 +3,18 @@ package hello.jpql.entity;
 import jakarta.persistence.*;
 
 @Entity
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "Member.findByName",
+            query = "SELECT m FROM Member m WHERE m.name = :name"
+        ),
+        @NamedQuery(
+            name = "Member.maxAge",
+            query = "SELECT max(m.age) FROM Member m"
+        ),
+    }
+)
 public class Member {
 
     @Id
