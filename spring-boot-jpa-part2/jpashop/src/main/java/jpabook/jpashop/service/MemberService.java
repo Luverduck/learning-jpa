@@ -13,7 +13,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberService {
 
-    // MemberRepository
     private final MemberRepository memberRepository;
 
     // 회원 가입
@@ -40,6 +39,13 @@ public class MemberService {
     // 회원 전체 조회
     public List<Member> findMembers() {
         return memberRepository.findAll();
+    }
+
+    // 회원 수정
+    @Transactional
+    public void update(Long id, String name) {
+        Member findMember = memberRepository.findOne(id);
+        findMember.setName(name);
     }
 
 }
