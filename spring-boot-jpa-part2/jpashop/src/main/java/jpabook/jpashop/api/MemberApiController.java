@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController // @Controller + @ResponseBody
 @RequiredArgsConstructor
 public class MemberApiController {
@@ -39,6 +41,24 @@ public class MemberApiController {
         return new UpdateMemberResponse(findMember.getId(), findMember.getName());
     }
 
+    // 회원 조회 (엔티티 반환)
+    @GetMapping("/api/v1/members")
+    public List<Member> findMembersV1() {
+        return memberService.findMembers();
+    }
+
+    // 회원 조회 (DTO 반환)
+    @GetMapping("/api/v2/members")
+    public Result findMembersV2() {
+        List<Member> findMembers = memberService.findMembers();
+        // 엔티티 컬렉션을 DTO 컬렉션으로 변환
+        List<MemberDto> collection = findMembers.stream()
+                                                .map(m -> new MemberDto(m.getName()))
+                                                .toList();
+        // DTO 컬렉션을 API 응답 DTO로 래핑하여 반환
+        return new Result<>(collection);
+    }
+
     // 회원 등록 요청 DTO
     @Data
     static class CreateMemberRequest {
@@ -67,6 +87,20 @@ public class MemberApiController {
     static class UpdateMemberResponse {
         private Long id;
         private String name;
+    }
+
+    // 회원 조회 응답 DTO
+    @Data
+    @AllArgsConstructor
+    static class MemberDto {
+        private String name;
+    }
+
+    // 회원 API 응답 DTO
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T data;
     }
 
 }
