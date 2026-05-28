@@ -24,6 +24,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	// Bean Validation을 위한 의존성 추가
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// Hibernate7Module 의존성 추가
+	implementation 'tools.jackson.datatype:jackson-datatype-hibernate7'
 	// SpringBoot DevTools 의존성 추가
 	implementation 'org.springframework.boot:spring-boot-devtools'
 	compileOnly 'org.projectlombok:lombok'
