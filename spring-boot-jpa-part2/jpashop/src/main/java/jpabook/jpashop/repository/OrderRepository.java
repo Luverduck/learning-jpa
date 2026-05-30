@@ -27,8 +27,7 @@ public class OrderRepository {
         return entityManager.find(Order.class, id);
     }
 
-    // 주문 목록 조회
-    // - JPQL 문자열 조립
+    // 주문 목록 조회 (JPQL 문자열 조립)
     public List<Order> findAllByString(OrderSearch orderSearch) {
         // JPQL
         String jpql = "select o from Order o join o.member m";
@@ -67,7 +66,7 @@ public class OrderRepository {
         return query.getResultList();
     }
 
-    // - Criteria API
+    // 주문 목록 조회 (Criteria API)
     public List<Order> findAllByCriteria(OrderSearch orderSearch) {
         // CriteriaBuilder 반환
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -93,6 +92,12 @@ public class OrderRepository {
         // 쿼리 객체 생성
         TypedQuery<Order> query = entityManager.createQuery(cq).setMaxResults(1000);
         // 쿼리 실행
+        return query.getResultList();
+    }
+
+    // 주문 목록 조회 (페치 조인)
+    public List<Order> findAllByFetchJoin() {
+        TypedQuery<Order> query = entityManager.createQuery("select o from Order o join fetch o.member m join fetch o.delivery d", Order.class);
         return query.getResultList();
     }
 

@@ -36,6 +36,15 @@ public class OrderSimpleApiController {
                         .toList();
     }
 
+    // 주문 조회 (JPQL + 페치조인)
+    @GetMapping("/api/v3/simple-orders")
+    public List<SimpleOrderDto> ordersV3() {
+        List<Order> orders = orderRepository.findAllByFetchJoin();
+        return orders.stream()
+                        .map(o -> new SimpleOrderDto(o))
+                        .toList();
+    }
+
     // 주문 조회 응답 DTO
     @Data
     static class SimpleOrderDto {
