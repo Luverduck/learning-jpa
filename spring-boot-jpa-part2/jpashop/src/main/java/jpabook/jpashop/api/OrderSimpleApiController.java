@@ -29,7 +29,7 @@ public class OrderSimpleApiController {
         return orders;
     }
 
-    // 주문 조회 (DTO 반환)
+    // 주문 조회 (엔티티를 DTO로 변환)
     @GetMapping("/api/v2/simple-orders")
     public List<SimpleOrderDto> ordersV2() {
         List<Order> orders = orderRepository.findAllByString(new OrderSearch());
@@ -39,7 +39,7 @@ public class OrderSimpleApiController {
                         .toList();
     }
 
-    // 주문 조회 (페치 조인)
+    // 주문 조회 (엔티티를 DTO로 변환 - 페치 조인 최적화)
     @GetMapping("/api/v3/simple-orders")
     public List<SimpleOrderDto> ordersV3() {
         List<Order> orders = orderRepository.findAllByFetchJoin();
@@ -48,7 +48,7 @@ public class OrderSimpleApiController {
                         .toList();
     }
 
-    // 주문 목록 조회 (DTO 조회 후 반환)
+    // 주문 목록 조회 (DTO 직접 조회)
     @GetMapping("/api/v4/simple-orders")
     public List<OrderSimpleQueryDto> ordersV4() {
         List<OrderSimpleQueryDto> orders = orderSimpleQueryRepository.findAllDto();
