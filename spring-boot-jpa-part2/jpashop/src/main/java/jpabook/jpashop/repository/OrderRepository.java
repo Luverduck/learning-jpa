@@ -5,6 +5,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import jpabook.jpashop.domain.Order;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -98,6 +99,12 @@ public class OrderRepository {
     // 주문 목록 조회 (페치 조인)
     public List<Order> findAllWithMemberDelivery() {
         TypedQuery<Order> query = entityManager.createQuery("select o from Order o join fetch o.member m join fetch o.delivery d", Order.class);
+        return query.getResultList();
+    }
+
+    // 주문 목록 조회 (페치 조인)
+    public List<Order> findAllWithItem() {
+        TypedQuery<Order> query = entityManager.createQuery("select distinct o from Order o join fetch o.member m join fetch o.delivery d join fetch o.orderItems oi join fetch oi.item i", Order.class);
         return query.getResultList();
     }
 

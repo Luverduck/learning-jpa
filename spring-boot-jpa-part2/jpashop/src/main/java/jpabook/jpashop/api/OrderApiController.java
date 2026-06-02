@@ -47,7 +47,7 @@ public class OrderApiController {
     // 주문 조회 (엔티티를 DTO로 변환 - 페치 조인 최적화)
     @GetMapping("/api/v3/orders")
     public List<OrderDto> ordersV3() {
-        List<Order> orders = orderRepository.findAllByString(new OrderSearch());
+        List<Order> orders = orderRepository.findAllWithItem();
         List<OrderDto> list = orders.stream().map(o -> new OrderDto(o)).toList();
         return list;
     }
