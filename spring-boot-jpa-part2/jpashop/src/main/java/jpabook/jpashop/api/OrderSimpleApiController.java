@@ -42,7 +42,7 @@ public class OrderSimpleApiController {
     // 주문 조회 (엔티티를 DTO로 변환 - 페치 조인 최적화)
     @GetMapping("/api/v3/simple-orders")
     public List<SimpleOrderDto> ordersV3() {
-        List<Order> orders = orderRepository.findAllByFetchJoin();
+        List<Order> orders = orderRepository.findAllWithMemberDelivery();
         return orders.stream()
                         .map(o -> new SimpleOrderDto(o))
                         .toList();
