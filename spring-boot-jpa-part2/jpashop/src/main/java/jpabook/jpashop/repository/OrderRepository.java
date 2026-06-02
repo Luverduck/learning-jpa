@@ -108,4 +108,12 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    // 주문 목록 조회 (페치 조인 및 페이징 적용)
+    public List<Order> findAllWithMemberDelivery(int offset, int limit) {
+        return entityManager.createQuery("select o from Order o join fetch o.member m join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
 }

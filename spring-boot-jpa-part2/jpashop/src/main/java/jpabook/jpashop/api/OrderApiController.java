@@ -9,6 +9,7 @@ import jpabook.jpashop.repository.OrderSearch;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -48,6 +49,17 @@ public class OrderApiController {
     @GetMapping("/api/v3/orders")
     public List<OrderDto> ordersV3() {
         List<Order> orders = orderRepository.findAllWithItem();
+        List<OrderDto> list = orders.stream().map(o -> new OrderDto(o)).toList();
+        return list;
+    }
+
+    // 주문 조회 (엔티티를 DTO로 변환 - 페이징과 한계 돌파)
+    @GetMapping("/api/v4/orders")
+    public List<OrderDto> ordersV4(
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "100") int limit
+        ) {
+        List<Order> orders = orderRepository.findAllWithMemberDelivery(offset, limit);
         List<OrderDto> list = orders.stream().map(o -> new OrderDto(o)).toList();
         return list;
     }
