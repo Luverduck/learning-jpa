@@ -96,7 +96,7 @@ public class OrderRepository {
     }
 
     // 주문 목록 조회 (페치 조인)
-    public List<Order> findAllByFetchJoin() {
+    public List<Order> findAllWithMemberDelivery() {
         TypedQuery<Order> query = entityManager.createQuery("select o from Order o join fetch o.member m join fetch o.delivery d", Order.class);
         return query.getResultList();
     }
