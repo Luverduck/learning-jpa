@@ -73,6 +73,12 @@ public class OrderApiController {
         return orderQueryRepository.findAllDto();
     }
 
+    // 주문 조회 (DTO 직접 조회 - )
+    @GetMapping("/api/v6/orders")
+    public List<OrderQueryDto> ordersV6() {
+        return orderQueryRepository.findAllDtoOptimization();
+    }
+
     // 주문 조회 응답 DTO
     @Getter
     static class OrderDto {
