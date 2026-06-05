@@ -15,7 +15,8 @@ spring:
         format_sql: true
         # 지연 로딩이 적용된 엔티티 또는 컬렉션을 초기화할 때, 한 번의 조회 쿼리의 IN 절에 포함할 식별자의 최대 수 설정
         default_batch_fetch_size: 100
-
+    # Open Session In View 설정 (기본값 : true)
+    # open_in_view: false
 # 로깅 설정
 logging:
   level:
