@@ -43,6 +43,11 @@ public class OrderQueryRepository {
         return result;
     }
 
+    // 주문 목록 조회 (DTO 조회 - 플랫 데이터 최적화)
+    public List<OrderFlatDto> findAllDtoFlat() {
+        return entityManager.createQuery("select new jpabook.jpashop.repository.order.query.OrderFlatDto(o.id, m.name, o.orderDate, o.status, d.address, i.name, oi.orderPrice, oi.count) from Order o join o.member m join o.delivery d join o.orderItems oi join oi.item i", OrderFlatDto.class).getResultList();
+    }
+
     // Order 조회
     private List<OrderQueryDto> findOrders() {
         return entityManager.createQuery("select new jpabook.jpashop.repository.order.query.OrderQueryDto(o.id, m.name, o.orderDate, o.status, d.address) from Order o join o.member m join o.delivery d", OrderQueryDto.class).getResultList();

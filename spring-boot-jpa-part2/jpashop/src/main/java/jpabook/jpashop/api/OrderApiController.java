@@ -6,6 +6,8 @@ import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.query.OrderFlatDto;
+import jpabook.jpashop.repository.order.query.OrderItemQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryRepository;
 import lombok.Getter;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -73,10 +76,56 @@ public class OrderApiController {
         return orderQueryRepository.findAllDto();
     }
 
-    // 주문 조회 (DTO 직접 조회 - )
+    // 주문 조회 (DTO 직접 조회 - 컬렉션 조회 최적화)
     @GetMapping("/api/v6/orders")
     public List<OrderQueryDto> ordersV6() {
         return orderQueryRepository.findAllDtoOptimization();
+    }
+
+    // 주문 조회 (DTO 조회 - 플랫 데이터 최적화)
+    @GetMapping("/api/v7/orders")
+    public List<OrderQueryDto> ordersV7() {
+        List<OrderFlatDto> flatDtoList = orderQueryRepository.findAllDtoFlat();
+        return flatDtoList.stream()
+                            .collect(
+                                // OrderQueryDto를 기준으로 그룹화하여 Map<OrderQueryDto, List<OrderItemQueryDto>> 형태로 반환
+                                Collectors.groupingBy(
+                                    // OrderFlatDto를 통해 OrderQueryDto 생성
+                                    o -> new OrderQueryDto(
+                                        o.getId(),
+                                        o.getName(),
+                                        o.getDate(),
+                                        o.getStatus(),
+                                        o.getAddress()
+                                    ),
+                                    Collectors.mapping(
+                                        // OrderFlatDto를 통해 OrderItemQueryDto 생성
+                                        o -> new OrderItemQueryDto(
+                                            o.getId(),
+                                            o.getItemName(),
+                                            o.getPrice(),
+                                            o.getCount()
+                                        ),
+                                        // OrderQueryDto에 대한 OrderItemQueryDto를 List 형태로 반환
+                                        Collectors.toList()
+                                    )
+                                )
+                            )
+                            // Map<OrderQueryDto, List<OrderItemQueryDto>>를 스트림으로 변환
+                            .entrySet().stream()
+                            // Map.Entry<OrderQueryDto, List<OrderItemQueryDto>>를 통해 OrderQueryDto 생성
+                            .map(
+                                e -> new OrderQueryDto(
+                                    e.getKey().getId(),
+                                    e.getKey().getName(),
+                                    e.getKey().getDate(),
+                                    e.getKey().getStatus(),
+                                    e.getKey().getAddress(),
+                                    e.getValue()
+                                )
+                            )
+                            // OrderQueryDto를 List 형태로 반환
+                            .toList();
     }
 
     // 주문 조회 응답 DTO
