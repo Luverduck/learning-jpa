@@ -4,25 +4,26 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import springdatajpa.basic.entity.Member;
+import springdatajpa.basic.entity.Team;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class MemberJpaRepository {
+public class TeamRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     // 저장
-    public Member save(Member member) {
-        entityManager.persist(member);
-        return member;
+    public Team save(Team team) {
+        entityManager.persist(team);
+        return team;
     }
 
     // 삭제
-    public void delete(Member member) {
-        entityManager.remove(member);
+    public void delete(Team team) {
+        entityManager.remove(team);
     }
 
     // 전체 조회
@@ -39,10 +40,6 @@ public class MemberJpaRepository {
     // 전체 개수 조회
     public Long count() {
         return entityManager.createQuery("select count(m) from Member m", Long.class).getSingleResult();
-    }
-
-    public Member find(Long id) {
-        return entityManager.find(Member.class, id);
     }
 
 }
