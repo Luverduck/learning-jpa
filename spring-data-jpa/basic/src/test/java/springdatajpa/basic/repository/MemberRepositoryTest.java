@@ -64,4 +64,17 @@ public class MemberRepositoryTest {
         Assertions.assertThat(result.get(0).getAge()).isEqualTo(20);
     }
 
+    @Test
+    public void testNamedQuery() {
+        // 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 쿼리 메소드 검증
+        List<Member> result = memberRepository.findByUsername("AAA");
+        Member findMember = result.get(0);
+        Assertions.assertThat(findMember).isEqualTo(member1);
+    }
+
 }
