@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import springdatajpa.basic.entity.Member;
 
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -49,6 +48,20 @@ public class MemberRepositoryTest {
         memberRepository.delete(member2);
         Long countAfter = memberRepository.count();
         Assertions.assertThat(countAfter).isEqualTo(0L);
+    }
+
+    @Test
+    public void findByUsernameAndAgeGraterThan() {
+        // 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("AAA", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 쿼리 메소드 검증
+        List<Member> result = memberRepository.findByUsernameAndAgeGreaterThan("AAA", 15);
+        Assertions.assertThat(result).hasSize(1);
+        Assertions.assertThat(result.get(0).getUsername()).isEqualTo("AAA");
+        Assertions.assertThat(result.get(0).getAge()).isEqualTo(20);
     }
 
 }

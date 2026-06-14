@@ -41,6 +41,14 @@ public class MemberJpaRepository {
         return entityManager.createQuery("select count(m) from Member m", Long.class).getSingleResult();
     }
 
+    // 쿼리 메소드
+    public List<Member> findByUsernameAndAgeGreaterThan(String username, int age) {
+        return entityManager.createQuery("select m from Member m where m.username = :username and m.age > :age", Member.class)
+                            .setParameter("username", username)
+                            .setParameter("age", age)
+                            .getResultList();
+    }
+
     public Member find(Long id) {
         return entityManager.find(Member.class, id);
     }
