@@ -9,6 +9,7 @@ import springdatajpa.basic.dto.MemberDto;
 import springdatajpa.basic.entity.Member;
 import springdatajpa.basic.entity.Team;
 
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -121,6 +122,22 @@ public class MemberRepositoryTest {
         List<MemberDto> result = memberRepository.findMemberDto();
         for (MemberDto memberDto : result) {
             System.out.println("memberDto = " + memberDto);
+        }
+    }
+
+    @Test
+    public void findByNames() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        memberRepository.save(member1);
+        // Team 엔티티 저장
+        Team teamA = new Team("teamA");
+        member1.setTeam(teamA);
+        teamRepository.save(teamA);
+        // @Query 쿼리 메소드 검증
+        List<Member> result = memberRepository.findByNames(Arrays.asList("AAA", "BBB"));
+        for (Member member : result) {
+            System.out.println("member = " + member);
         }
     }
 

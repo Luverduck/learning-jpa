@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import springdatajpa.basic.dto.MemberDto;
 import springdatajpa.basic.entity.Member;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -28,5 +29,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 쿼리 메소드 (@Query - DTO 조회)
     @Query("select new springdatajpa.basic.dto.MemberDto(m.id, m.username, t.name) from Member m join m.team t")
     List<MemberDto> findMemberDto();
+
+    // 쿼리 메소드 (파라미터 바인딩 - 컬렉션)
+    @Query("select m from Member m where m.username in :names")
+    List<Member> findByNames(@Param("names") Collection<String> names);
 
 }
