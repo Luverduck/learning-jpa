@@ -5,7 +5,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import springdatajpa.basic.dto.MemberDto;
 import springdatajpa.basic.entity.Member;
+import springdatajpa.basic.entity.Team;
 
 import java.util.List;
 
@@ -15,6 +17,9 @@ public class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private TeamRepository teamRepository;
 
     @Test
     public void testMember() {
@@ -87,6 +92,36 @@ public class MemberRepositoryTest {
         // @Query 쿼리 메소드 검증
         List<Member> result = memberRepository.findUser("AAA", 10);
         Assertions.assertThat(result.get(0)).isEqualTo(member1);
+    }
+
+    @Test
+    public void findUsernameList() {
+        // 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // @Query 쿼리 메소드 검증
+        List<String> result = memberRepository.findUsernameList();
+        for (String username : result) {
+            System.out.println("username = " + username);
+        }
+    }
+
+    @Test
+    public void findMemberDto() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        memberRepository.save(member1);
+        // Team 엔티티 저장
+        Team teamA = new Team("teamA");
+        member1.setTeam(teamA);
+        teamRepository.save(teamA);
+        // @Query 쿼리 메소드 검증
+        List<MemberDto> result = memberRepository.findMemberDto();
+        for (MemberDto memberDto : result) {
+            System.out.println("memberDto = " + memberDto);
+        }
     }
 
 }
