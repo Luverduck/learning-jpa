@@ -64,4 +64,21 @@ class MemberJpaRepositoryTest {
         Assertions.assertThat(result.get(0).getAge()).isEqualTo(20);
     }
 
+    @Test
+    public void testPaging() {
+        // 엔티티 저장
+        for (int i = 1; i <= 5; ++i) {
+            memberJpaRepository.save(new Member("member" + i, 10));
+        }
+        // 페이징을 위한 값
+        int age = 10;
+        int offset = 0;
+        int limit = 3;
+        // 쿼리 메소드 검증
+        List<Member> members = memberJpaRepository.findByPage(age, offset, limit);
+        Long totalCount = memberJpaRepository.totalCount(age);
+        Assertions.assertThat(members.size()).isEqualTo(3);
+        Assertions.assertThat(totalCount).isEqualTo(5L);
+    }
+
 }
