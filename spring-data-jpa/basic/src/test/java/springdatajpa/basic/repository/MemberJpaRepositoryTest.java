@@ -75,7 +75,7 @@ class MemberJpaRepositoryTest {
         int offset = 0;
         int limit = 3;
         // 쿼리 메소드 검증
-        List<Member> members = memberJpaRepository.findByPage(age, offset, limit);
+        List<Member> members = memberJpaRepository.findByAge(age, offset, limit);
         Long totalCount = memberJpaRepository.totalCount(age);
         Assertions.assertThat(members.size()).isEqualTo(3);
         Assertions.assertThat(totalCount).isEqualTo(5L);

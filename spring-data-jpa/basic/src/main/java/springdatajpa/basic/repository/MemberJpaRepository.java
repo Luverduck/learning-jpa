@@ -55,7 +55,7 @@ public class MemberJpaRepository {
     }
 
     // 쿼리 메소드 (페이징과 정렬)
-    public List<Member> findByPage(int age, int offset, int limit) {
+    public List<Member> findByAge(int age, int offset, int limit) {
         return entityManager.createQuery("select m from Member m where m.age = :age order by username desc", Member.class)
                             .setParameter("age", age)
                             .setFirstResult(offset)
