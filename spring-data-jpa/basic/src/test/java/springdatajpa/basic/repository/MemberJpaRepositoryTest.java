@@ -70,8 +70,9 @@ class MemberJpaRepositoryTest {
         for (int i = 1; i <= 5; ++i) {
             memberJpaRepository.save(new Member("member" + i, 10));
         }
-        // 페이징을 위한 값
+        // 조건절 값
         int age = 10;
+        // 페이징을 위한 값
         int offset = 0;
         int limit = 3;
         // 쿼리 메소드 검증
