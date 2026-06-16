@@ -5,6 +5,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import springdatajpa.basic.dto.MemberDto;
 import springdatajpa.basic.entity.Member;
 import springdatajpa.basic.entity.Team;
@@ -244,6 +248,81 @@ public class MemberRepositoryTest {
         // > 조회 결과가 둘 이상일 경우 IncorrectResultSizeDataAccessException 발생
         Optional<Member> result = memberRepository.findOptionalByUsername("AAA");
         System.out.println("result = " + result);
+    }
+
+    @Test
+    public void testSlicing() {
+        // 엔티티 저장
+        for (int i = 1; i <= 5; ++i) {
+            memberRepository.save(new Member("member" + i, 10));
+        }
+        // 조건절 값
+        int age = 10;
+        // 페이징과 정렬을 위한 값
+        // 페이지 번호(offset), 개수(limit), 정렬
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+        // 쿼리 메소드 검증
+        Slice<Member> slice = memberRepository.findSliceByAge(age, pageRequest);
+        List<Member> content = slice.getContent();
+        for (Member member : content) {
+            System.out.println("member = " + member);
+        }
+        // 현재 페이지 번호
+        Assertions.assertThat(slice.getNumber()).isEqualTo(0);
+        // 조건을 만족하는 데이터 중 현재 페이지에 조회된 데이터 개수
+        Assertions.assertThat(content.size()).isEqualTo(3);
+        // 현재 페이지가 첫 번째 페이지인지 여부 (0번 페이지인지 여부)
+        Assertions.assertThat(slice.isFirst()).isTrue();
+        // 다음 페이지가 존재하는지 여부
+        Assertions.assertThat(slice.hasNext()).isTrue();
+    }
+
+    @Test
+    public void testPaging() {
+        // 엔티티 저장
+        for (int i = 1; i <= 5; ++i) {
+            memberRepository.save(new Member("member" + i, 10));
+        }
+        // 조건절 값
+        int age = 10;
+        // 페이징과 정렬을 위한 값
+        // 페이지 번호(offset), 개수(limit), 정렬
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+        // 쿼리 메소드 검증
+        Page<Member> page = memberRepository.findPageByAge(age, pageRequest);
+        List<Member> content = page.getContent();
+        long totalElements = page.getTotalElements();
+        for (Member member : content) {
+            System.out.println("member = " + member);
+        }
+        System.out.println("totalElements = " + totalElements);
+        // 조건을 만족하는 데이터 총 개수
+        Assertions.assertThat(page.getTotalElements()).isEqualTo(5);
+        // 전체 페이지 번호
+        Assertions.assertThat(page.getTotalPages()).isEqualTo(2);
+        // 현재 페이지 번호
+        Assertions.assertThat(page.getNumber()).isEqualTo(0);
+        // 조건을 만족하는 데이터 중 현재 페이지에 조회된 데이터 개수
+        Assertions.assertThat(content.size()).isEqualTo(3);
+        // 현재 페이지가 첫 번째 페이지인지 여부 (0번 페이지인지 여부)
+        Assertions.assertThat(page.isFirst()).isTrue();
+        // 다음 페이지가 존재하는지 여부
+        Assertions.assertThat(page.hasNext()).isTrue();
+    }
+
+    @Test
+    public void testPagingCount() {
+        // 엔티티 저장
+        for (int i = 1; i <= 5; ++i) {
+            memberRepository.save(new Member("member" + i, 10));
+        }
+        // 조건절 값
+        int age = 10;
+        // 페이징과 정렬을 위한 값
+        // 페이지 번호(offset), 개수(limit), 정렬
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+        // 쿼리 메소드 검증
+        Page<Member> page = memberRepository.findByAge(age, pageRequest);
     }
 
 }
