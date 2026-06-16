@@ -11,6 +11,7 @@ import springdatajpa.basic.entity.Team;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -139,6 +140,110 @@ public class MemberRepositoryTest {
         for (Member member : result) {
             System.out.println("member = " + member);
         }
+    }
+
+    @Test
+    public void returnMember() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 반환형 검증
+        Member result = memberRepository.findMemberByUsername("AAA");
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    public void returnMemberNoResult() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 반환형 검증
+        // > 조회 결과가 없을 경우 null 반환
+        Member result = memberRepository.findMemberByUsername("CCC");
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    public void returnMemberInvalidResult() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("AAA", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 반환형 검증
+        // > 조회 결과가 둘 이상일 때 IncorrectResultSizeDataAccessException 발생
+        Member result = memberRepository.findMemberByUsername("AAA");
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    public void returnCollection() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 반환형 검증
+        List<Member> result = memberRepository.findListByUsername("AAA");
+        for (Member member : result) {
+            System.out.println("member = " + member);
+        }
+    }
+
+    @Test
+    public void returnCollectionNoResult() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 반환형 검증
+        // > 조회 결과가 없을 경우 빈 컬렉션 반환
+        List<Member> result = memberRepository.findListByUsername("CCC");
+        System.out.println("result = " + result);
+        System.out.println("result.size() = " + result.size());
+    }
+
+    @Test
+    public void returnOptional() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 반환형 검증
+        Optional<Member> result = memberRepository.findOptionalByUsername("AAA");
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    public void returnOptionalNoResult() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 반환형 검증
+        Optional<Member> result = memberRepository.findOptionalByUsername("CCC");
+        // > 조회 결과가 없을 경우 Optional.empty 반환
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    public void returnOptionalInvalidResult() {
+        // Member 엔티티 저장
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("AAA", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 반환형 검증
+        // > 조회 결과가 둘 이상일 경우 IncorrectResultSizeDataAccessException 발생
+        Optional<Member> result = memberRepository.findOptionalByUsername("AAA");
+        System.out.println("result = " + result);
     }
 
 }

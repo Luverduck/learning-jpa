@@ -8,6 +8,7 @@ import springdatajpa.basic.entity.Member;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -33,5 +34,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 쿼리 메소드 (파라미터 바인딩 - 컬렉션)
     @Query("select m from Member m where m.username in :names")
     List<Member> findByNames(@Param("names") Collection<String> names);
+
+    // 쿼리 메소드 (반환형 - 단일)
+    Member findMemberByUsername(String username);
+
+    // 쿼리 메소드 (반환형 - 컬렉션)
+    List<Member> findListByUsername(String username);
+
+    // 쿼리 메소드 (반환형 - Optional)
+    Optional<Member> findOptionalByUsername(String username);
 
 }
