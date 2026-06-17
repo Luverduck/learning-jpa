@@ -1,5 +1,7 @@
 package springdatajpa.basic.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,9 @@ import java.util.Optional;
 @SpringBootTest
 @Transactional
 public class MemberRepositoryTest {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -323,6 +328,32 @@ public class MemberRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
         // 쿼리 메소드 검증
         Page<Member> page = memberRepository.findByAge(age, pageRequest);
+    }
+
+    @Test
+    public void bulkUpdate() {
+        // 엔티티 저장
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 21));
+        memberRepository.save(new Member("member5", 40));
+        // 벌크 연산 검증
+        Integer resultCount = memberRepository.bulkAgePlus(20);
+        Assertions.assertThat(resultCount).isEqualTo(3);
+        // 영속성 컨텍스트 비우기 전
+        List<Member> membersBefore = memberRepository.findByUsername("member5");
+        Member member5 = membersBefore.get(0);
+        System.out.println("member5 = " + member5);
+        // 영속성 컨텍스트 비우기
+        /*
+        entityManager.flush();
+        entityManager.clear();
+        */
+        // 영속성 컨텍스트 비우기 후
+        List<Member> membersAfter = memberRepository.findByUsername("member5");
+        member5 = membersAfter.get(0);
+        System.out.println("member5 = " + member5);
     }
 
 }

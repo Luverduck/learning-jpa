@@ -82,4 +82,17 @@ class MemberJpaRepositoryTest {
         Assertions.assertThat(totalCount).isEqualTo(5L);
     }
 
+    @Test
+    public void bulkUpdate() {
+        // 엔티티 저장
+        memberJpaRepository.save(new Member("member1", 10));
+        memberJpaRepository.save(new Member("member2", 19));
+        memberJpaRepository.save(new Member("member3", 20));
+        memberJpaRepository.save(new Member("member4", 21));
+        memberJpaRepository.save(new Member("member5", 40));
+        // 벌크 연산 검증
+        Integer resultCount = memberJpaRepository.bulkAgePlus(20);
+        Assertions.assertThat(resultCount).isEqualTo(3);
+    }
+
 }

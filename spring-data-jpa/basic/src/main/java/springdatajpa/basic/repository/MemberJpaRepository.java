@@ -70,4 +70,11 @@ public class MemberJpaRepository {
                             .getSingleResult();
     }
 
+    // 쿼리 메소드 (벌크 연산)
+    public Integer bulkAgePlus(int age) {
+        return entityManager.createQuery("update Member m set m.age = m.age + 1 where m.age >= :age")
+                            .setParameter("age", age)
+                            .executeUpdate();
+    }
+
 }
