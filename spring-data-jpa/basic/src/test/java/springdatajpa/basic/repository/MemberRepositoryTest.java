@@ -356,4 +356,121 @@ public class MemberRepositoryTest {
         System.out.println("member5 = " + member5);
     }
 
+    @Test
+    public void findMemberLazy() {
+        // 엔티티 저장
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member1", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 엔티티 조회
+        List<Member> members = memberRepository.findAllById(Arrays.asList(member1.getId(), member2.getId()));
+        System.out.println("members = " + members);
+        System.out.println("members.size = " + members.size());
+        for (Member member : members) {
+            System.out.println("member = " + member);
+            System.out.println("member.teamClass = " + member.getTeam().getClass());
+            System.out.println("member.team = " + member.getTeam().getName());
+        }
+    }
+
+    @Test
+    public void findMemberUsingEntityGraph1() {
+        // 엔티티 저장
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member1", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 엔티티 조회
+        List<Member> members = memberRepository.findAll();
+        for (Member member : members) {
+            System.out.println("member = " + member);
+            System.out.println("member.teamClass = " + member.getTeam().getClass());
+            System.out.println("member.team = " + member.getTeam().getName());
+        }
+    }
+
+    @Test
+    public void findMemberUsingEntityGraph2() {
+        // 엔티티 저장
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member1", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 엔티티 조회
+        List<Member> members = memberRepository.findAllUsingEntityGraphByUsername("member1");
+        for (Member member : members) {
+            System.out.println("member = " + member);
+            System.out.println("member.teamClass = " + member.getTeam().getClass());
+            System.out.println("member.team = " + member.getTeam().getName());
+        }
+    }
+
+    @Test
+    public void findMemberUsingEntityGraph3() {
+        // 엔티티 저장
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member1", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 엔티티 조회
+        List<Member> members = memberRepository.findAllUsingEntityGraph();
+        for (Member member : members) {
+            System.out.println("member = " + member);
+            System.out.println("member.teamClass = " + member.getTeam().getClass());
+            System.out.println("member.team = " + member.getTeam().getName());
+        }
+    }
+
+    @Test
+    public void findMemberUsingEntityGraph4() {
+        // 엔티티 저장
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member1", 20, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 엔티티 조회
+        List<Member> members = memberRepository.findAllUsingNamedEntityGraphByUsername("member1");
+        for (Member member : members) {
+            System.out.println("member = " + member);
+            System.out.println("member.teamClass = " + member.getTeam().getClass());
+            System.out.println("member.team = " + member.getTeam().getName());
+        }
+    }
+
 }

@@ -3,6 +3,7 @@ package springdatajpa.basic.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -65,5 +66,27 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
     Integer bulkAgePlus(@Param("age") int age);
+
+    // 쿼리 메소드 (페치 조인)
+    @Query("select m from Member m left join fetch m.team t")
+    List<Member> findMemberFetchJoin();
+
+    // 쿼리 메소드 (@EntityGraph - JpaRepository 쿼리 메소드)
+    @EntityGraph(attributePaths = {"team"})
+    @Override
+    List<Member> findAll();
+
+    // 쿼리 메소드 (@EntityGraph - 이름 기반 쿼리 메소드)
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findAllUsingEntityGraphByUsername(@Param("username") String username);
+
+    // 쿼리 메소드 (@EntityGraph - @Query 쿼리 메소드)
+    @EntityGraph(attributePaths = {"team"})
+    @Query("select m from Member m")
+    List<Member> findAllUsingEntityGraph();
+
+    // 쿼리 메소드 (@EntityGraph - @NamedEntityGraph 참조)
+    @EntityGraph("Member.all")
+    List<Member> findAllUsingNamedEntityGraphByUsername(@Param("username") String username);
 
 }
