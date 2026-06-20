@@ -489,4 +489,16 @@ public class MemberRepositoryTest {
         entityManager.flush();
     }
 
+    @Test
+    public void findLockByUsername() {
+        // 엔티티 저장
+        Member member = new Member("member1", 10);
+        memberRepository.save(member);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 엔티티 조회
+        List<Member> findMember = memberRepository.findLockByUsername("member1");
+    }
+
 }
