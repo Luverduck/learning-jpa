@@ -473,4 +473,20 @@ public class MemberRepositoryTest {
         }
     }
 
+    @Test
+    public void findReadOnlyByUsername() {
+        // 엔티티 저장
+        Member member = new Member("member1", 10);
+        memberRepository.save(member);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 엔티티 조회
+        // Member findMember = memberRepository.findById(member.getId()).get();
+        Member findMember = memberRepository.findReadOnlyByUsername("member1");
+        // 더티 체크 여부 확인
+        findMember.setUsername("member2");
+        entityManager.flush();
+    }
+
 }

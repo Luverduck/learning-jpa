@@ -1,12 +1,10 @@
 package springdatajpa.basic.repository;
 
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import springdatajpa.basic.dto.MemberDto;
 import springdatajpa.basic.entity.Member;
@@ -88,5 +86,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // 쿼리 메소드 (@EntityGraph - @NamedEntityGraph 참조)
     @EntityGraph("Member.all")
     List<Member> findAllUsingNamedEntityGraphByUsername(@Param("username") String username);
+
+    // 쿼리 메소드 (@QueryHint)
+    @QueryHints(value = {@QueryHint(name = "org.hibernate.readOnly", value = "true"),})
+    Member findReadOnlyByUsername(String username);
 
 }
