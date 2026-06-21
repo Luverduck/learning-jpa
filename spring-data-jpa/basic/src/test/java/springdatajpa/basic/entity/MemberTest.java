@@ -3,8 +3,10 @@ package springdatajpa.basic.entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import springdatajpa.basic.repository.MemberRepository;
 
 import java.util.List;
 
@@ -14,6 +16,9 @@ class MemberTest {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     public void testEntity() {
@@ -40,6 +45,31 @@ class MemberTest {
             System.out.println("member = " + member);
             System.out.println("-> member.team = " + member.getTeam());
         }
+    }
+
+    @Test
+    public void jpaBaseEntityTest() throws Exception {
+        // 엔티티 저장
+        Member member = new Member("member1");
+        memberRepository.save(member); // @PrePersist
+        // 생성 시점과 수정 시점 간의 차
+        Thread.sleep(100);
+        // 엔티티 수정
+        member.setUsername("member2");
+        entityManager.flush(); // @PreUpdate
+        entityManager.clear();
+        /*
+        // 엔티티 생명주기 이벤트를 통한 감사 기능 동작 검증
+        Member findMember = memberRepository.findById(member.getId()).get();
+        System.out.println("findMember.getCreatedDate() = " + findMember.getCreatedDate());
+        System.out.println("findMember.getUpdatedDate() = " + findMember.getUpdatedDate());
+        */
+        // 스프링 데이터 JPA의 감사 기능 동작 검증
+        Member findMember = memberRepository.findById(member.getId()).get();
+        System.out.println("findMember.getCreatedDate() = " + findMember.getCreatedDate());
+        System.out.println("findMember.getLastModifiedDate() = " + findMember.getLastModifiedDate());
+        System.out.println("findMember.getCreatedBy() = " + findMember.getCreatedBy());
+        System.out.println("findMember.getLastModifiedBy() = " + findMember.getLastModifiedBy());
     }
 
 }
