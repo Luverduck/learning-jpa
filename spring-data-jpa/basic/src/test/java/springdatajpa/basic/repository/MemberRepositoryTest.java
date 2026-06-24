@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import springdatajpa.basic.dto.MemberDto;
 import springdatajpa.basic.entity.Member;
 import springdatajpa.basic.entity.Team;
@@ -504,6 +505,27 @@ public class MemberRepositoryTest {
     @Test
     public void callMemberRepositoryCustomImpl() {
         List<Member> members = memberRepository.findMemberCustom();
+    }
+
+    @Test
+    public void specificationBasic() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        entityManager.persist(member1);
+        entityManager.persist(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // Specification 생성
+        Specification<Member> specification = MemberSpecification.username("member1").and(MemberSpecification.teamName("teamA"));
+        // 생성한 Specification의 조건을 통해 Member 엔티티 조회
+        List<Member> result = memberRepository.findAll(specification);
+        // 검증
+        Assertions.assertThat(result.size()).isEqualTo(1);
     }
 
 }
