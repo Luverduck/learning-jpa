@@ -43,7 +43,7 @@ public class MemberController {
     }
 
     // MemberController 빈 초기화 후 실행
-    @PostConstruct
+    // @PostConstruct
     public void init() {
         for (int i = 0; i < 100; ++i) {
             Member member = new Member("user" + i);
