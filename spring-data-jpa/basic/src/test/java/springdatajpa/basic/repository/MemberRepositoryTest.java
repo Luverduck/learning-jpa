@@ -7,10 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import springdatajpa.basic.dto.MemberDto;
 import springdatajpa.basic.entity.Member;
@@ -526,6 +523,29 @@ public class MemberRepositoryTest {
         List<Member> result = memberRepository.findAll(specification);
         // 검증
         Assertions.assertThat(result.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void queryByExample() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        entityManager.persist(member1);
+        entityManager.persist(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // Example 생성
+        Member member = new Member("member1");
+        ExampleMatcher matcher = ExampleMatcher.matching().withIgnorePaths("age");
+        Example<Member> example = Example.of(member, matcher);
+        // Example을 조건으로 하여 Member 조회
+        List<Member> result = memberRepository.findAll(example);
+        // 검증
+        Assertions.assertThat(result.get(0).getUsername()).isEqualTo("member1");
     }
 
 }
