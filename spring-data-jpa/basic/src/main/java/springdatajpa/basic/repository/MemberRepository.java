@@ -105,4 +105,20 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     // 동적 프로젝션
     <T> List<T> findDynamicProjectionsByUsername(@Param("username") String username, Class<T> type);
 
+    // 쿼리 메소드 (네이티브 쿼리)
+    @Query(value = "select * from member where username = :username", nativeQuery = true)
+    Member findByNativeQuery(String username);
+
+    // 쿼리 메소드 (네이티브 쿼리 + 인터페이스 기반 프로젝션)
+    @Query(value = "select m.member_id as id, m.username, t.name as teamName from member m left join team t where m.username = :username", nativeQuery = true)
+    MemberProjection findByNativeQueryProjection(String username);
+
+    // 쿼리 메소드 (네이티브 쿼리 + 인터페이스 기반 프로젝션 + 페이징)
+    @Query(
+        value = "select m.member_id as id, m.username, t.name as teamName from member m left join team t",
+        countQuery = "select count(*) from member m",
+        nativeQuery = true
+    )
+    Page<MemberProjection> findByNativeQueryProjectionWithPaging(Pageable pageable);
+
 }

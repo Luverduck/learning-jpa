@@ -661,4 +661,68 @@ public class MemberRepositoryTest {
         }
     }
 
+    @Test
+    public void nativeQuery() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        entityManager.persist(member1);
+        entityManager.persist(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 네이티브 쿼리
+        Member result = memberRepository.findByNativeQuery("member1");
+        // 검증
+        System.out.println("result = " + result);
+    }
+
+    @Test
+    public void nativeQueryProjection() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        for (int i = 1; i <= 10; ++i) {
+            Member member = new Member("member" + i, 10, teamA);
+            entityManager.persist(member);
+        }
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 네이티브 쿼리
+        MemberProjection memberProjection = memberRepository.findByNativeQueryProjection("member1");
+        // 검증
+        System.out.println("memberProjection.getId() = " + memberProjection.getId());
+        System.out.println("memberProjection.getUsername() = " + memberProjection.getUsername());
+        System.out.println("memberProjection.getTeamName() = " + memberProjection.getTeamName());
+    }
+
+    @Test
+    public void nativeQueryProjectionWithPaging() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        for (int i = 1; i <= 10; ++i) {
+            Member member = new Member("member" + i, 10, teamA);
+            entityManager.persist(member);
+        }
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 네이티브 쿼리
+        Page<MemberProjection> result = memberRepository.findByNativeQueryProjectionWithPaging(PageRequest.of(0, 5));
+        // 검증
+        List<MemberProjection> content = result.getContent();
+        for (MemberProjection memberProjection : content) {
+            System.out.println("memberProjection.getId() = " + memberProjection.getId());
+            System.out.println("memberProjection.getUsername() = " + memberProjection.getUsername());
+            System.out.println("memberProjection.getTeamName() = " + memberProjection.getTeamName());
+        }
+    }
+
 }
