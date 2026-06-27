@@ -548,4 +548,87 @@ public class MemberRepositoryTest {
         Assertions.assertThat(result.get(0).getUsername()).isEqualTo("member1");
     }
 
+    @Test
+    public void interfaceBasedProjections() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        entityManager.persist(member1);
+        entityManager.persist(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+
+        List<UsernameOnly> result = memberRepository.findInterfaceBasedProjectionsByUsername("member1");
+        for (UsernameOnly usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly.getUsername());
+        }
+    }
+
+    @Test
+    public void classBasedProjections() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        entityManager.persist(member1);
+        entityManager.persist(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+
+        List<UserNameOnlyDto> result = memberRepository.findClassBasedProjectionsByUsername("member1");
+        for (UserNameOnlyDto userNameOnlyDto : result) {
+            System.out.println("userNameOnlyDto = " + userNameOnlyDto.getUsername());
+        }
+    }
+
+    @Test
+    public void DynamicProjections() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        entityManager.persist(member1);
+        entityManager.persist(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+
+        List<UserNameOnlyDto> result = memberRepository.findDynamicProjectionsByUsername("member1", UserNameOnlyDto.class);
+        for (UserNameOnlyDto userNameOnlyDto : result) {
+            System.out.println("userNameOnlyDto = " + userNameOnlyDto.getUsername());
+        }
+    }
+
+    @Test
+    public void NestedClosedProjections() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        entityManager.persist(member1);
+        entityManager.persist(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+
+        List<UsernameWithTeam> result = memberRepository.findDynamicProjectionsByUsername("member1", UsernameWithTeam.class);
+        for (UsernameWithTeam usernameWithTeam : result) {
+            String username = usernameWithTeam.getUsername();
+            System.out.println("username = " + username);
+            String teamName = usernameWithTeam.getTeam().getName();
+            System.out.println("teamName = " + teamName);
+        }
+    }
+
 }
