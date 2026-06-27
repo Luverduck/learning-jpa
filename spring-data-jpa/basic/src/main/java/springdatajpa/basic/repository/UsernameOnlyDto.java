@@ -1,10 +1,10 @@
 package springdatajpa.basic.repository;
 
-public class UserNameOnlyDto {
+public class UsernameOnlyDto {
 
     private final String username;
 
-    public UserNameOnlyDto(String username) {
+    public UsernameOnlyDto(String username) {
         this.username = username;
     }
 

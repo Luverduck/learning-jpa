@@ -561,10 +561,12 @@ public class MemberRepositoryTest {
         // 영속성 컨텍스트 비우기
         entityManager.flush();
         entityManager.clear();
-
+        // 인터페이스 기반 프로젝션
         List<UsernameOnly> result = memberRepository.findInterfaceBasedProjectionsByUsername("member1");
+        // 검증
         for (UsernameOnly usernameOnly : result) {
-            System.out.println("usernameOnly = " + usernameOnly.getUsername());
+            System.out.println("usernameOnly = " + usernameOnly.getClass());
+            System.out.println("usernameOnly.getUsername() = " + usernameOnly.getUsername());
         }
     }
 
@@ -581,15 +583,17 @@ public class MemberRepositoryTest {
         // 영속성 컨텍스트 비우기
         entityManager.flush();
         entityManager.clear();
-
-        List<UserNameOnlyDto> result = memberRepository.findClassBasedProjectionsByUsername("member1");
-        for (UserNameOnlyDto userNameOnlyDto : result) {
-            System.out.println("userNameOnlyDto = " + userNameOnlyDto.getUsername());
+        // 클래스 기반 프로젝션
+        List<UsernameOnlyDto> result = memberRepository.findClassBasedProjectionsByUsername("member1");
+        // 검증
+        for (UsernameOnlyDto userNameOnlyDto : result) {
+            System.out.println("userNameOnlyDto = " + userNameOnlyDto.getClass());
+            System.out.println("userNameOnlyDto.getUsername() = " + userNameOnlyDto.getUsername());
         }
     }
 
     @Test
-    public void DynamicProjections() {
+    public void DynamicProjectionsByInterfaceType() {
         // Team 저장
         Team teamA = new Team("teamA");
         entityManager.persist(teamA);
@@ -601,10 +605,34 @@ public class MemberRepositoryTest {
         // 영속성 컨텍스트 비우기
         entityManager.flush();
         entityManager.clear();
+        // 동적 프로젝션
+        List<UsernameOnly> result = memberRepository.findDynamicProjectionsByUsername("member1", UsernameOnly.class);
+        // 검증
+        for (UsernameOnly userNameOnly : result) {
+            System.out.println("userNameOnly = " + userNameOnly.getClass());
+            System.out.println("userNameOnly.getUsername() = " + userNameOnly.getUsername());
+        }
+    }
 
-        List<UserNameOnlyDto> result = memberRepository.findDynamicProjectionsByUsername("member1", UserNameOnlyDto.class);
-        for (UserNameOnlyDto userNameOnlyDto : result) {
-            System.out.println("userNameOnlyDto = " + userNameOnlyDto.getUsername());
+    @Test
+    public void DynamicProjectionsByClassType() {
+        // Team 저장
+        Team teamA = new Team("teamA");
+        entityManager.persist(teamA);
+        // Member 저장
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        entityManager.persist(member1);
+        entityManager.persist(member2);
+        // 영속성 컨텍스트 비우기
+        entityManager.flush();
+        entityManager.clear();
+        // 동적 프로젝션
+        List<UsernameOnlyDto> result = memberRepository.findDynamicProjectionsByUsername("member1", UsernameOnlyDto.class);
+        // 검증
+        for (UsernameOnlyDto userNameOnlyDto : result) {
+            System.out.println("userNameOnlyDto = " + userNameOnlyDto.getClass());
+            System.out.println("userNameOnlyDto.getUsername() = " + userNameOnlyDto.getUsername());
         }
     }
 
@@ -621,13 +649,15 @@ public class MemberRepositoryTest {
         // 영속성 컨텍스트 비우기
         entityManager.flush();
         entityManager.clear();
-
+        // 중첩 프로젝션
         List<UsernameWithTeam> result = memberRepository.findDynamicProjectionsByUsername("member1", UsernameWithTeam.class);
+        // 검증
         for (UsernameWithTeam usernameWithTeam : result) {
-            String username = usernameWithTeam.getUsername();
-            System.out.println("username = " + username);
-            String teamName = usernameWithTeam.getTeam().getName();
-            System.out.println("teamName = " + teamName);
+            System.out.println("usernameWithTeam = " + usernameWithTeam.getClass());
+            System.out.println("usernameWithTeam.getUsername() = " + usernameWithTeam.getUsername());
+            UsernameWithTeam.TeamInfo teamInfo = usernameWithTeam.getTeam();
+            System.out.println("teamInfo = " + teamInfo.getClass());
+            System.out.println("teamInfo.getName() = " + teamInfo.getName());
         }
     }
 
