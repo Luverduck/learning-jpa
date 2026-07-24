@@ -54,10 +54,22 @@ public class QuerydslBasicTest {
         Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
     }
 
-    // Querydsl 방식
+    // Querydsl 방식 (Q 타입 인스턴스 직접 생성)
     @Test
     public void startQuerydsl() {
         QMember m = new QMember("m");
+        Member findMember = queryFactory
+                                .selectFrom(m)
+                                .from(m)
+                                .where(m.username.eq("member1"))
+                                .fetchOne();
+        Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
+
+    // Querydsl 방식 (Q 타입 정적 인스턴스)
+    @Test
+    public void startQuerydslWithQType() {
+        QMember m = QMember.member;
         Member findMember = queryFactory
                                 .selectFrom(m)
                                 .from(m)
