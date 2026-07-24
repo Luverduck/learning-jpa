@@ -12,6 +12,8 @@ import querydsl.basic.entity.Member;
 import querydsl.basic.entity.QMember;
 import querydsl.basic.entity.Team;
 
+import static querydsl.basic.entity.QMember.*;
+
 @SpringBootTest
 @Transactional
 public class QuerydslBasicTest {
@@ -69,11 +71,36 @@ public class QuerydslBasicTest {
     // Querydsl 방식 (Q 타입 정적 인스턴스)
     @Test
     public void startQuerydslWithQType() {
-        QMember m = QMember.member;
+        QMember m = member;
         Member findMember = queryFactory
                                 .selectFrom(m)
                                 .from(m)
                                 .where(m.username.eq("member1"))
+                                .fetchOne();
+        Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
+
+    // 검색 조건 적용
+    @Test
+    public void search1() {
+        Member findMember = queryFactory
+                                .selectFrom(member)
+                                .from(member)
+                                .where(member.username.eq("member1"))
+                                .fetchOne();
+        Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
+
+    // 검색 조건 적용 (복합 조건 검색)
+    @Test
+    public void search2() {
+        Member findMember = queryFactory
+                                .selectFrom(member)
+                                .from(member)
+                                .where(
+                                    member.username.eq("member1"),
+                                    member.age.eq(10)
+                                )
                                 .fetchOne();
         Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
     }
