@@ -12,6 +12,8 @@ import querydsl.basic.entity.Member;
 import querydsl.basic.entity.QMember;
 import querydsl.basic.entity.Team;
 
+import java.util.List;
+
 import static querydsl.basic.entity.QMember.*;
 
 @SpringBootTest
@@ -103,6 +105,38 @@ public class QuerydslBasicTest {
                                 )
                                 .fetchOne();
         Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
+    }
+
+    // 조회 결과 반환
+    @Test
+    public void resultFetch() {
+        // 조회 결과를 List<T>로 반환 (결과가 없으면 비어 있는 List<T> 반환)
+        List<Member> fetch = queryFactory
+                                .selectFrom(member)
+                                .fetch();
+        // 단건 조회 결과 반환 (결과가 없으면 null, 둘 이상이면 NonUniqueResultException 발생)
+        Member fetchOne = queryFactory
+                                .selectFrom(member)
+                                .fetchOne();
+        // 조회 결과 중 첫 번째 한 건 반환 (결과가 없으면 null)
+        Member fetchFirst = queryFactory
+                                .selectFrom(member)
+                                .fetchFirst();
+    }
+
+    // 조회 결과 및 조회 결과 수 반환
+    @Test
+    public void resultFetchAndCount() {
+        // 조회 결과 반환
+        List<Member> fetchResult = queryFactory
+                                    .select(member)
+                                    .from(member)
+                                    .fetch();
+        // 조회 결과 수 반환
+        Long fetchResultCount = queryFactory
+                                    .select(member.count())
+                                    .from(member)
+                                    .fetchOne();
     }
 
 }
