@@ -40,10 +40,16 @@ public class QuerydslBasicTest {
         Member member2 = new Member("member2", 20, teamA);
         Member member3 = new Member("member3", 30, teamB);
         Member member4 = new Member("member4", 40, teamB);
+        Member memberNull = new Member(null, 100);
+        Member member5 = new Member("member5", 100);
+        Member member6 = new Member("member6", 100);
         entityManager.persist(member1);
         entityManager.persist(member2);
         entityManager.persist(member3);
         entityManager.persist(member4);
+        entityManager.persist(memberNull);
+        entityManager.persist(member5);
+        entityManager.persist(member6);
         // JPAQueryFactory 초기화
         queryFactory = new JPAQueryFactory(entityManager);
     }
@@ -137,6 +143,30 @@ public class QuerydslBasicTest {
                                     .select(member.count())
                                     .from(member)
                                     .fetchOne();
+    }
+
+    /**
+     * 정렬
+     * 1. 회원 나이 기준 내림차순 (desc)
+     * 2. 회원 이름 기준 올림차순 (asc)
+     * 단, 2에서 회원 이름이 없으면 마지막에 출력 (nullsLast)
+     */
+    @Test
+    public void sort() {
+        List<Member> result = queryFactory
+                                .selectFrom(member)
+                                .where(member.age.eq(100))
+                                .orderBy(
+                                    member.age.desc(),
+                                    member.username.asc().nullsLast()
+                                )
+                                .fetch();
+        Member member5 = result.get(0);
+        Member member6 = result.get(1);
+        Member memberNull = result.get(2);
+        Assertions.assertThat(member5.getUsername()).isEqualTo("member5");
+        Assertions.assertThat(member6.getUsername()).isEqualTo("member6");
+        Assertions.assertThat(memberNull.getUsername()).isNull();
     }
 
 }
