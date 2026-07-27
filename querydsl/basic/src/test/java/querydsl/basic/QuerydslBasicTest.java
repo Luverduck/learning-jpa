@@ -50,6 +50,8 @@ public class QuerydslBasicTest {
         entityManager.persist(memberNull);
         entityManager.persist(member5);
         entityManager.persist(member6);
+        entityManager.flush();
+        entityManager.clear();
         // JPAQueryFactory 초기화
         queryFactory = new JPAQueryFactory(entityManager);
     }
@@ -88,7 +90,75 @@ public class QuerydslBasicTest {
         Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
     }
 
-    // 검색 조건 적용
+    // 데이터 저장 (JPAInsertClause)
+    @Test
+    public void insertClause() {
+        // JPAInsertClause
+        long result = queryFactory
+                                .insert(member)
+                                .set(member.username, "member8")
+                                .set(member.age, 50)
+                                .execute();
+        // 검증
+        Member findMember = queryFactory
+                                .selectFrom(member)
+                                .where(member.username.eq("member8"))
+                                .fetchOne();
+        Assertions.assertThat(findMember.getUsername()).isEqualTo("member8");
+    }
+
+    // 데이터 수정 (JPAUpdateClause)
+    @Test
+    public void updateClause() {
+        // 준비
+        long result = queryFactory
+                                .insert(member)
+                                .set(member.username, "member8")
+                                .set(member.age, 50)
+                                .execute();
+        // JPAUpdateClause
+        long updateResult = queryFactory
+                                .update(member)
+                                .set(member.username, "member9")
+                                .set(member.age, 60)
+                                .where(member.username.eq("member8"))
+                                .execute();
+        entityManager.flush();
+        entityManager.clear();
+        // 검증
+        Member findMember = queryFactory
+                                .selectFrom(member)
+                                .where(member.username.eq("member9"))
+                                .fetchOne();
+        Assertions.assertThat(findMember.getUsername()).isEqualTo("member9");
+        Assertions.assertThat(findMember.getAge()).isEqualTo(60);
+    }
+
+    // 데이터 삭제 (JPADeleteClause)
+    @Test
+    public void deleteClause() {
+        // 준비
+        Member target = new Member("updateTarget", 50);
+        entityManager.persist(target);
+        Long targetId = target.getId();
+        entityManager.flush();
+        entityManager.clear();
+        // JPADeleteClause
+        long deleteResult = queryFactory
+                                .delete(member)
+                                .where(member.id.eq(targetId))
+                                .execute();
+        entityManager.flush();
+        entityManager.clear();
+        // 검증
+        Member findMember = queryFactory
+                                .selectFrom(member)
+                                .where(member.id.eq(targetId))
+                                .fetchOne();
+        Assertions.assertThat(findMember).isNull();
+    }
+
+    // 데이터 조회 (JPAQuery<T>)
     @Test
     public void search1() {
         Member findMember = queryFactory
