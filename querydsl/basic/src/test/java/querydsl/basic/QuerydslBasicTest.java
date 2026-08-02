@@ -3,6 +3,8 @@ package querydsl.basic;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,10 @@ public class QuerydslBasicTest {
     // EntityManager
     @Autowired
     EntityManager entityManager;
+
+    // EntityManagerFactory
+    @PersistenceUnit
+    EntityManagerFactory entityManagerFactory;
 
     // JPAQueryFactory
     JPAQueryFactory queryFactory;
@@ -422,6 +428,33 @@ public class QuerydslBasicTest {
         for (Tuple tuple : result) {
             System.out.println("tuple = " + tuple);
         }
+    }
+
+    // 페치 조인 미적용
+    @Test
+    public void fetchJoinNo() {
+        // 조회 결과 반환
+        Member result = queryFactory
+                                .selectFrom(member)
+                                .where(member.username.eq("member1"))
+                                .fetchOne();
+        // 검증
+        boolean isLoaded = entityManagerFactory.getPersistenceUnitUtil().isLoaded(result.getTeam());
+        Assertions.assertThat(isLoaded).isFalse();
+    }
+
+    // 페치 조인 적용
+    @Test
+    public void fetchJoin() {
+        // 조회 결과 반환
+        Member result = queryFactory
+                                .selectFrom(member)
+                                .join(member.team, team).fetchJoin()
+                                .where(member.username.eq("member1"))
+                                .fetchOne();
+        // 검증
+        boolean isLoaded = entityManagerFactory.getPersistenceUnitUtil().isLoaded(result.getTeam());
+        Assertions.assertThat(isLoaded).isTrue();
     }
 
 }
