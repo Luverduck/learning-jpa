@@ -1,5 +1,6 @@
 package querydsl.basic;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
@@ -15,6 +16,7 @@ import querydsl.basic.entity.Team;
 import java.util.List;
 
 import static querydsl.basic.entity.QMember.*;
+import static querydsl.basic.entity.QTeam.team;
 
 @SpringBootTest
 @Transactional
@@ -40,16 +42,11 @@ public class QuerydslBasicTest {
         Member member2 = new Member("member2", 20, teamA);
         Member member3 = new Member("member3", 30, teamB);
         Member member4 = new Member("member4", 40, teamB);
-        Member memberNull = new Member(null, 100);
-        Member member5 = new Member("member5", 100);
-        Member member6 = new Member("member6", 100);
         entityManager.persist(member1);
         entityManager.persist(member2);
         entityManager.persist(member3);
         entityManager.persist(member4);
-        entityManager.persist(memberNull);
-        entityManager.persist(member5);
-        entityManager.persist(member6);
+        // 영속성 컨텍스트 초기화
         entityManager.flush();
         entityManager.clear();
         // JPAQueryFactory 초기화
@@ -215,6 +212,18 @@ public class QuerydslBasicTest {
                                     .fetchOne();
     }
 
+    // 정렬 테스트를 위한 초기화 데이터 추가
+    public void initForSort() {
+        Member memberNull = new Member(null, 100);
+        Member member5 = new Member("member5", 100);
+        Member member6 = new Member("member6", 100);
+        entityManager.persist(memberNull);
+        entityManager.persist(member5);
+        entityManager.persist(member6);
+        entityManager.flush();
+        entityManager.clear();
+    }
+
     /**
      * 정렬
      * 1. 회원 나이 기준 내림차순 (desc)
@@ -223,6 +232,8 @@ public class QuerydslBasicTest {
      */
     @Test
     public void sort() {
+        // 정렬 테스트를 위한 초기화 데이터 추가
+        initForSort();
         // 조회 결과 반환
         List<Member> result = queryFactory
                                 .selectFrom(member)
@@ -253,6 +264,52 @@ public class QuerydslBasicTest {
                                 .fetch();
         // 검증
         Assertions.assertThat(result.size()).isEqualTo(2);
+    }
+
+    // 집계
+    @Test
+    public void aggregation() {
+        // 조회 결과 반환
+        List<Tuple> result = queryFactory
+                                .select(
+                                    member.count(),
+                                    member.age.sumLong(),
+                                    member.age.avg(),
+                                    member.age.min(),
+                                    member.age.max()
+                                )
+                                .from(member)
+                                .fetch();
+        // 검증
+        Tuple tuple = result.get(0);
+        Assertions.assertThat(tuple.get(member.count())).isEqualTo(4);
+        Assertions.assertThat(tuple.get(member.age.sumLong())).isEqualTo(100);
+        Assertions.assertThat(tuple.get(member.age.avg())).isEqualTo(25);
+        Assertions.assertThat(tuple.get(member.age.max())).isEqualTo(40);
+        Assertions.assertThat(tuple.get(member.age.min())).isEqualTo(10);
+    }
+
+    // 그룹화
+    @Test
+    public void grouping() {
+        // 조회 결과 반환
+        // TODO: 팀별로 팀명과 평균 연령 조회 >> { 팀명, 평균 연령 }
+        List<Tuple> result = queryFactory
+                                .select(
+                                    team.name,
+                                    member.age.avg()
+                                )
+                                .from(member)
+                                .join(member.team, team)
+                                .groupBy(team.name)
+                                .fetch();
+        Tuple teamA = result.get(0);
+        Tuple teamB = result.get(1);
+        // 검증
+        Assertions.assertThat(teamA.get(team.name)).isEqualTo("teamA");
+        Assertions.assertThat(teamA.get(member.age.avg())).isEqualTo(15);
+        Assertions.assertThat(teamB.get(team.name)).isEqualTo("teamB");
+        Assertions.assertThat(teamB.get(member.age.avg())).isEqualTo(35);
     }
 
 }
