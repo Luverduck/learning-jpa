@@ -365,4 +365,63 @@ public class QuerydslBasicTest {
         Assertions.assertThat(result).extracting("username").containsExactly("teamA", "teamB");
     }
 
+    // ON 절 - 조인 대상 필터링 (ON 절)
+    @Test
+    public void joinOnFiltering() {
+        // 조회 결과 반환
+        List<Tuple> result = queryFactory
+                                .select(member, team)
+                                .from(member)
+                                .join(member.team, team)
+                                .on(team.name.eq("teamA"))
+                                .fetch();
+        // 조회 결과 확인
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple);
+        }
+    }
+
+    // ON 절 - 조인 대상 필터링 (WHERE 절)
+    @Test
+    public void joinWhereFiltering() {
+        // 조회 결과 반환
+        List<Tuple> result = queryFactory
+                                .select(member, team)
+                                .from(member)
+                                .join(member.team, team)
+                                .where(team.name.eq("teamA"))
+                                .fetch();
+        // 조회 결과 확인
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple);
+        }
+    }
+
+    // 연관관계 없는 엔티티 조인 테스트를 위한 데이터 초기화
+    public void initForJoinOnNoRelation() {
+        entityManager.persist(new Member("teamA"));
+        entityManager.persist(new Member("teamB"));
+        entityManager.persist(new Member("teamC"));
+        entityManager.flush();
+        entityManager.clear();
+    }
+
+    // ON 절 - 연관관계 없는 엔티티 조인
+    @Test
+    public void joinOnNoRelation() {
+        // 연관관계 없는 엔티티 조인 테스트를 위한 데이터 초기화
+        initForJoinOnNoRelation();
+        // 조회 결과 반환
+        List<Tuple> result = queryFactory
+                                .select(member, team)
+                                .from(member)
+                                .leftJoin(team)
+                                .on(member.username.eq(team.name))
+                                .fetch();
+        // 조회 결과 확인
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple);
+        }
+    }
+
 }
