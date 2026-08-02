@@ -223,6 +223,7 @@ public class QuerydslBasicTest {
      */
     @Test
     public void sort() {
+        // 조회 결과 반환
         List<Member> result = queryFactory
                                 .selectFrom(member)
                                 .where(member.age.eq(100))
@@ -234,9 +235,24 @@ public class QuerydslBasicTest {
         Member member5 = result.get(0);
         Member member6 = result.get(1);
         Member memberNull = result.get(2);
+        // 검증
         Assertions.assertThat(member5.getUsername()).isEqualTo("member5");
         Assertions.assertThat(member6.getUsername()).isEqualTo("member6");
         Assertions.assertThat(memberNull.getUsername()).isNull();
+    }
+
+    // 페이징
+    @Test
+    public void paging() {
+        // 조회 결과 반환
+        List<Member> result = queryFactory
+                                .selectFrom(member)
+                                .orderBy(member.username.desc())
+                                .offset(1)
+                                .limit(2)
+                                .fetch();
+        // 검증
+        Assertions.assertThat(result.size()).isEqualTo(2);
     }
 
 }
