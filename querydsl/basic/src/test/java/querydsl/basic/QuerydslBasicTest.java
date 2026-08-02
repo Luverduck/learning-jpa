@@ -212,7 +212,7 @@ public class QuerydslBasicTest {
                                     .fetchOne();
     }
 
-    // 정렬 테스트를 위한 초기화 데이터 추가
+    // 정렬 테스트를 위한 데이터 초기화
     public void initForSort() {
         Member memberNull = new Member(null, 100);
         Member member5 = new Member("member5", 100);
@@ -310,6 +310,59 @@ public class QuerydslBasicTest {
         Assertions.assertThat(teamA.get(member.age.avg())).isEqualTo(15);
         Assertions.assertThat(teamB.get(team.name)).isEqualTo("teamB");
         Assertions.assertThat(teamB.get(member.age.avg())).isEqualTo(35);
+    }
+
+    // 조인 테스트를 위한 데이터 초기화
+    public void initForJoin() {
+        entityManager.persist(new Member("teamA"));
+        entityManager.persist(new Member("teamB"));
+        entityManager.flush();
+        entityManager.clear();
+    }
+
+    // 기본 조인 (내부 조인)
+    @Test
+    public void innerJoin() {
+        // 조인 테스트를 위한 데이터 초기화
+        initForJoin();
+        // 조회 결과 반환
+        // TODO: 팀 A에 소속된 모든 회원 조회
+        List<Member> result = queryFactory
+                                .selectFrom(member)
+                                .join(member.team, team)
+                                .fetch();
+        // 검증
+        Assertions.assertThat(result).extracting("username").containsExactly("member1", "member2", "member3", "member4");
+    }
+
+    // 기본 조인 (외부 조인)
+    @Test
+    public void outerJoin() {
+        // 조인 테스트를 위한 데이터 초기화
+        initForJoin();
+        // 조회 결과 반환
+        List<Member> result = queryFactory
+                                .selectFrom(member)
+                                .leftJoin(member.team, team)
+                                .fetch();
+        // 검증
+        Assertions.assertThat(result).extracting("username").containsExactly("member1", "member2", "member3", "member4", "teamA", "teamB");
+    }
+
+    // 기본 조인 (세타 조인)
+    @Test
+    public void thetaJoin() {
+        // 조인 테스트를 위한 데이터 초기화
+        initForJoin();
+        // 조회 결과 반환
+        List<Member> result = queryFactory
+                                .select(member)
+                                .from(member, team)
+                                .where(member.username.eq(team.name))
+                                .orderBy(member.username.asc())
+                                .fetch();
+        // 검증
+        Assertions.assertThat(result).extracting("username").containsExactly("teamA", "teamB");
     }
 
 }
