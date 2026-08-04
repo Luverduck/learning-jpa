@@ -1,6 +1,9 @@
 package querydsl.basic;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import querydsl.basic.dto.MemberDto;
+import querydsl.basic.dto.UserDto;
 import querydsl.basic.entity.Member;
+import querydsl.basic.entity.QMember;
 import querydsl.basic.entity.Team;
 
 import java.util.List;
@@ -92,6 +98,110 @@ public class QuerydslAdvancedTest {
             Integer age = tuple.get(member.age);
             System.out.println("username = " + username);
             System.out.println("age = " + age);
+        }
+    }
+
+    // 튜플 프로젝션
+    @Test
+    public void findTupleByProjectionTuple() {
+        // 조회 결과 반환
+        List<Tuple> result = queryFactory
+                                    .select(
+                                        Projections.tuple(member.username, member.age)
+                                    )
+                                    .from(member)
+                                    .fetch();
+        // 조회 결과 확인
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple);
+        }
+    }
+
+    // DTO 프로젝션 - 순수 JPA (JPQL)
+    @Test
+    public void findDtoByJPQL() {
+        // 조회 결과 반환
+        List<MemberDto> result = entityManager
+                                    .createQuery(
+                                        "select new querydsl.basic.dto.MemberDto(m.username, m.age) from Member m",
+                                        MemberDto.class
+                                    )
+                                    .getResultList();
+        // 조회 결과 확인
+        for (MemberDto memberDto : result) {
+            System.out.println("memberDto = " + memberDto);
+        }
+    }
+
+    // DTO 프로젝션 - Bean 프로젝션 ( Projections.bean() )
+    @Test
+    public void findDtoByProjectionBean() {
+        // 조회 결과 반환
+        List<MemberDto> result = queryFactory
+                                    .select(
+                                        Projections.bean(MemberDto.class, member.username, member.age)
+                                    )
+                                    .from(member)
+                                    .fetch();
+        // 조회 결과 확인
+        for (MemberDto memberDto : result) {
+            System.out.println("memberDto = " + memberDto);
+        }
+    }
+
+    // DTO 프로젝션 - Bean 프로젝션 ( Projections.fields() )
+    @Test
+    public void findDtoByProjectionField() {
+        // 조회 결과 반환
+        List<MemberDto> result = queryFactory
+                                    .select(
+                                        Projections.fields(MemberDto.class, member.username, member.age)
+                                    )
+                                    .from(member)
+                                    .fetch();
+        // 조회 결과 확인
+        for (MemberDto memberDto : result) {
+            System.out.println("memberDto = " + memberDto);
+        }
+    }
+
+    // DTO 프로젝션 - Bean 프로젝션 ( 프로젝션 대상과 DTO 프로퍼티의 이름이 다를 경우 )
+    @Test
+    public void findDtoByProjection() {
+        QMember memberSub = new QMember("memberSub");
+        // 조회 결과 반환
+        List<UserDto> result = queryFactory
+                                    .select(
+                                        Projections.fields(
+                                            UserDto.class,
+                                            member.username.as("name"),
+                                            ExpressionUtils.as(
+                                                JPAExpressions.select(memberSub.age.max()).from(memberSub),
+                                                "age"
+                                            )
+                                        )
+                                    )
+                                    .from(member)
+                                    .fetch();
+        // 조회 결과 확인
+        for (UserDto userDto : result) {
+            System.out.println("userDto = " + userDto);
+        }
+    }
+
+    // DTO 프로젝션 - 생성자 프로젝션 ( Projections.constructor() )
+    @Test
+    public void findDtoByProjectionConstructor() {
+        // 조회 결과 반환
+        List<MemberDto> result = queryFactory
+                                    .select(
+                                        Projections.constructor(MemberDto.class, member.username, member.age)
+                                    )
+                                    .from(member)
+                                    .fetch();
+        // 조회 결과 확인
+        for (MemberDto memberDto : result) {
+            System.out.println("memberDto = " + memberDto);
         }
     }
 
