@@ -1,11 +1,13 @@
 package querydsl.basic;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,6 +222,37 @@ public class QuerydslAdvancedTest {
         for (MemberDto memberDto : result) {
             System.out.println("memberDto = " + memberDto);
         }
+    }
+
+    // 동적 쿼리 - BooleanBuilder
+    @Test
+    public void dynamicQueryBooleanBuilder() {
+        // 조건
+        String usernameParam = "member1";
+        Integer ageParam = 10;
+        // 조회 결과 반환
+        List<Member> result = searchMember1(usernameParam, ageParam);
+        // 검증
+        Assertions.assertThat(result.size()).isEqualTo(1);
+    }
+
+    private List<Member> searchMember1(String usernameCondition, Integer ageCondition) {
+        // BooleanBuilder
+        BooleanBuilder builder = new BooleanBuilder();
+        // username 조건
+        if (usernameCondition != null) {
+            builder.and(member.username.eq(usernameCondition));
+        }
+        // age 조건
+        if (ageCondition != null) {
+            builder.and(member.age.eq(ageCondition));
+        }
+        // 조회 결과 반환
+        List<Member> result = queryFactory
+                                    .selectFrom(member)
+                                    .where(builder)
+                                    .fetch();
+        return result;
     }
 
 }
