@@ -3,7 +3,9 @@ package querydsl.basic;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -253,6 +255,41 @@ public class QuerydslAdvancedTest {
                                     .where(builder)
                                     .fetch();
         return result;
+    }
+
+    // 동적 쿼리 - where() 다중 파라미터 방식
+    @Test
+    public void dynamicQueryWhereMultiParameter() {
+        // 조건
+        String usernameParam = "member1";
+        Integer ageParam = 10;
+        // 조회 결과 반환
+        List<Member> result = searchMember2(usernameParam, ageParam);
+        // 검증
+        Assertions.assertThat(result.size()).isEqualTo(1);
+    }
+
+    private List<Member> searchMember2(String username, Integer age) {
+        List<Member> result = queryFactory
+                                    .selectFrom(member)
+                                    .where(usernameEq(username), ageEq(age))
+                                    .fetch();
+        return result;
+    }
+
+    // 조건 1
+    private BooleanExpression usernameEq(String username) {
+        return username != null ? member.username.eq(username) : null;
+    }
+
+    // 조건 2
+    private BooleanExpression ageEq(Integer age) {
+        return age != null ? member.age.eq(age) : null;
+    }
+
+    // 조건 1과 조건 2를 재사용하여 새로운 조건 생성 가능
+    private BooleanExpression allEq(String username, Integer age) {
+        return usernameEq(username).and(ageEq(age));
     }
 
 }
