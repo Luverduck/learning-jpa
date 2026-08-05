@@ -3,7 +3,6 @@ package querydsl.basic;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
@@ -55,8 +54,8 @@ public class QuerydslAdvancedTest {
         entityManager.persist(member3);
         entityManager.persist(member4);
         // 영속성 컨텍스트 초기화
-        entityManager.flush();
-        entityManager.clear();
+        // entityManager.flush();
+        // entityManager.clear();
         // JPAQueryFactory 초기화
         queryFactory = new JPAQueryFactory(entityManager);
     }
@@ -290,6 +289,70 @@ public class QuerydslAdvancedTest {
     // 조건 1과 조건 2를 재사용하여 새로운 조건 생성 가능
     private BooleanExpression allEq(String username, Integer age) {
         return usernameEq(username).and(ageEq(age));
+    }
+
+    // 벌크 연산 - 수정
+    @Test
+    public void buildUpdate() {
+        // 벌크 연산 (수정)
+        long rowCount = queryFactory
+                                .update(member)
+                                .set(member.username, "비회원")
+                                .where(member.age.lt(28))
+                                .execute();
+        // 영속성 컨텍스트 초기화
+        // entityManager.flush();
+        // entityManager.clear();
+        // 조회 결과 반환
+        List<Member> result = queryFactory
+                                .selectFrom(member)
+                                .fetch();
+        // 조회 결과 확인
+        for (Member member : result) {
+            System.out.println("member = " + member);
+        }
+    }
+
+    // 벌크 연산 - 수정
+    @Test
+    public void bulkUpdateAddAge() {
+        // 벌크 연산 - 수정
+        long rowCount = queryFactory
+                                .update(member)
+                                .set(member.age, member.age.add(1))
+                                .execute();
+        // 영속성 컨텍스트 초기화
+        entityManager.flush();
+        entityManager.clear();
+        // 조회 결과 반환
+        List<Member> result = queryFactory
+                                .selectFrom(member)
+                                .fetch();
+        // 조회 결과 확인
+        for (Member member : result) {
+            System.out.println("member = " + member);
+        }
+    }
+
+    // 벌크 연산 - 삭제
+    @Test
+    public void bulkDelete() {
+        // 벌크 연산 - 삭제
+        long rowCount = queryFactory
+                                .delete(member)
+                                .where(member.age.gt(18))
+                                .execute();
+        // 영속성 컨텍스트 초기화
+        entityManager.flush();
+        entityManager.clear();
+        // 조회 결과 반환
+        List<Member> result = queryFactory
+                                .selectFrom(member)
+                                .fetch();
+        // 조회 결과 확인
+        for (Member member : result) {
+            System.out.println("member = " + member);
+        }
     }
 
 }
