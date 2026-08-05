@@ -5,6 +5,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -352,6 +353,37 @@ public class QuerydslAdvancedTest {
         // 조회 결과 확인
         for (Member member : result) {
             System.out.println("member = " + member);
+        }
+    }
+
+    // SQL 함수 호출하기
+    @Test
+    public void sqlFunction1() {
+        List<String> result = queryFactory
+                                .select(
+                                    Expressions.stringTemplate(
+                                        "function('replace', {0}, {1}, {2})",
+                                        member.username, "mem", "M"
+                                    )
+                                )
+                                .from(member)
+                                .fetch();
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    // SQL 함수 호출하기
+    @Test
+    public void sqlFunction2() {
+        List<String> result = queryFactory
+                                .select(
+                                    member.username.upper()
+                                )
+                                .from(member)
+                                .fetch();
+        for (String s : result) {
+            System.out.println("s = " + s);
         }
     }
 
