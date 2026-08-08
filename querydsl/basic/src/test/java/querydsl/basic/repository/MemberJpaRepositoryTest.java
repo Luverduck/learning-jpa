@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import querydsl.basic.dto.MemberDto;
+import querydsl.basic.dto.MemberSearchCondition;
+import querydsl.basic.dto.MemberTeamDto;
 import querydsl.basic.entity.Member;
 import querydsl.basic.entity.Team;
 
@@ -103,6 +105,38 @@ class MemberJpaRepositoryTest {
         for (MemberDto memberDto : result) {
             System.out.println("memberDto = " + memberDto);
         }
+    }
+
+    // 동적 쿼리 - BooleanBuilder 방식
+    @Test
+    public void searchByBooleanBuilderTest() {
+        // 데이터 초기화
+        init();
+        // 조건 생성
+        MemberSearchCondition condition = new MemberSearchCondition();
+        condition.setAgeMin(35);
+        condition.setAgeMax(40);
+        condition.setTeamName("teamB");
+        // 동적 쿼리
+        List<MemberTeamDto> result = memberJpaRepository.searchByBooleanBuilder(condition);
+        // 검증
+        Assertions.assertThat(result).extracting("username").containsExactly("member4");
+    }
+
+    // 동적 쿼리 - where() 다중 파라미터 방식
+    @Test
+    public void searchByWhereMultiParameterTest() {
+        // 데이터 초기화
+        init();
+        // 조건 생성
+        MemberSearchCondition condition = new MemberSearchCondition();
+        condition.setAgeMin(35);
+        condition.setAgeMax(40);
+        condition.setTeamName("teamB");
+        // 동적 쿼리
+        List<MemberTeamDto> result = memberJpaRepository.searchByBooleanBuilder(condition);
+        // 검증
+        Assertions.assertThat(result).extracting("username").containsExactly("member4");
     }
 
 }
