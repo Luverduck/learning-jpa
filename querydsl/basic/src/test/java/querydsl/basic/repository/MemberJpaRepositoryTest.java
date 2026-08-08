@@ -1,10 +1,8 @@
 package querydsl.basic.repository;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +24,7 @@ class MemberJpaRepositoryTest {
     @Autowired
     MemberJpaRepository memberJpaRepository;
 
-    // 순수 JPA 기본 테스트
+    // 순수 JPA 리포지토리 - 순수 JPA 기본 테스트
     @Test
     public void basicJpaTest() {
         // 엔티티 저장
@@ -43,7 +41,7 @@ class MemberJpaRepositoryTest {
         Assertions.assertThat(result3).containsExactly(member);
     }
 
-    // QueryDSL 기본 테스트
+    // 순수 JPA 리포지토리 - QueryDSL 기본 테스트
     @Test
     public void basicQuerydslTest() {
         // 엔티티 저장
