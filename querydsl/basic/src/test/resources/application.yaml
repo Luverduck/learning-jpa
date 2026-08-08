@@ -3,7 +3,7 @@ spring:
     name: basic
   # 실행 프로필
   profiles:
-    active: local
+    active: test
   # 데이터베이스 설정
   datasource:
     url: jdbc:h2:tcp://localhost/D:/database/h2/data/querydsl
