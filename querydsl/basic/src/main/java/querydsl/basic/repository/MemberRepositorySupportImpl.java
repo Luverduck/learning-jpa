@@ -4,7 +4,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.Querydsl;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.util.StringUtils;
@@ -12,16 +11,15 @@ import querydsl.basic.dto.MemberSearchCondition;
 import querydsl.basic.entity.Member;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static querydsl.basic.entity.QMember.member;
 import static querydsl.basic.entity.QTeam.team;
 
-public class MemberRepositorySupportCustomImpl extends QuerydslRepositorySupport implements MemberRepositorySupportCustom {
+public class MemberRepositorySupportImpl extends QuerydslRepositorySupport implements MemberRepositorySupport {
 
     // 생성자
-    public MemberRepositorySupportCustomImpl() {
+    public MemberRepositorySupportImpl() {
         super(Member.class); // QuerydslRepositorySupport 생성자 호출
     }
 

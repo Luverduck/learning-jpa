@@ -6,7 +6,7 @@ import querydsl.basic.entity.Member;
 
 import java.util.List;
 
-public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom, MemberRepositorySupportCustom, QuerydslPredicateExecutor<Member> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom, MemberRepositorySupport, QuerydslPredicateExecutor<Member> {
 
     List<Member> findByUsername(String username);
 

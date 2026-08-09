@@ -7,7 +7,7 @@ import querydsl.basic.entity.Member;
 
 import java.util.List;
 
-public interface MemberRepositorySupportCustom {
+public interface MemberRepositorySupport {
 
     List<Member> searchWithSupport(MemberSearchCondition condition);
 
