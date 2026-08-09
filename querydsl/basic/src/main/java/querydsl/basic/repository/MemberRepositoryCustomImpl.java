@@ -116,7 +116,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     // 사용자 나이 상한 조건
     private BooleanExpression ageLoe(Integer ageMax) {
-        return ageMax != null ? member.age.goe(ageMax) : null;
+        return ageMax != null ? member.age.loe(ageMax) : null;
     }
 
 }
