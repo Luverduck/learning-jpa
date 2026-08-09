@@ -110,4 +110,21 @@ public class MemberRepositoryTest {
         }
     }
 
+    // QuerydslRepositorySupport
+    @Test
+    public void querydslRepositorySupportTest() {
+        // 데이터 초기화
+        init();
+        // 조건 생성
+        MemberSearchCondition condition = new MemberSearchCondition();
+        // 페이징 조건 생성
+        PageRequest pageRequest = PageRequest.of(0, 3);
+        // 조회 결과 반환
+        Iterable<Member> result = memberRepository.searchPageWithSupport(condition, pageRequest);
+        // 조회 결과 확인
+        for (Member findMember : result) {
+            System.out.println("findMember = " + findMember);
+        }
+    }
+
 }
