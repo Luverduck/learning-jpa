@@ -54,7 +54,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     // 페이징
     @Override
-    public Page<MemberTeamDto> searchPage( MemberSearchCondition condition, Pageable pageable) {
+    public Page<MemberTeamDto> searchPage(MemberSearchCondition condition, Pageable pageable) {
         // 조건 조회
         List<MemberTeamDto> content = queryFactory
                     .select(new QMemberTeamDto(
